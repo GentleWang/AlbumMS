@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class SmbService {
 
     String equiptIp = "192.168.124.20";
-    String authUserName = "debianwang";
-    String authPwd = "shuo19880404";
+    String authUserName = "****";
+    String authPwd = "*****";
     String shareDir = "photos";
 
     public Map<String, List<String>> getSMBFileMd5(String filePathDir, PrintWriter writer) throws IOException {
