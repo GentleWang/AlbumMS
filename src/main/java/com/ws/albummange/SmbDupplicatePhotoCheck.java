@@ -3,13 +3,10 @@ package com.ws.albummange;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class DupplicatePhotoCheck {
+public class SmbDupplicatePhotoCheck {
 
 
     public static void main(String[] args) throws Exception {
@@ -17,7 +14,7 @@ public class DupplicatePhotoCheck {
 
         Map<String, List<String>> map = new HashMap<>();
         try (PrintWriter writer = new PrintWriter(new File("duplicates.txt"))) {
-            map = test.getSMBFileMd5("/D3100", writer);
+            map = test.getSMBFileHash("/D3100", writer);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,7 +17,7 @@ public class FileDigest {
      * @param file
      * @return
      */
-    public static String getFileMD5(File file) {
+    public static String getFileHash(File file) {
         if (!file.isFile()) {
             return null;
         }
@@ -26,7 +26,7 @@ public class FileDigest {
         byte buffer[] = new byte[1024];
         int len;
         try {
-            digest = MessageDigest.getInstance("MD5");
+            digest = MessageDigest.getInstance("SHA-256");
             in = new FileInputStream(file);
             while ((len = in.read(buffer, 0, 1024)) != -1) {
                 digest.update(buffer, 0, len);
@@ -54,7 +54,7 @@ public class FileDigest {
      * @param inputStream
      * @return
      */
-    public static String getFileMD5(InputStream inputStream) {
+    public static String getFileHash(InputStream inputStream) {
         MessageDigest digest = null;
         byte buffer[] = new byte[1024];
         int len;
@@ -115,7 +115,7 @@ public class FileDigest {
                     scanFileAndGetMD5(file, md5s);
                 } else {
                     File file1 = new File(file + "");
-                    md5s.put(file.getAbsolutePath(), getFileMD5(file1));
+                    md5s.put(file.getAbsolutePath(), getFileHash(file1));
                 }
             }
         }
