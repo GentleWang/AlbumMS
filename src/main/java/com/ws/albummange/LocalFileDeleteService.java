@@ -21,11 +21,12 @@ public class LocalFileDeleteService {
         try(PrintWriter writer = new PrintWriter(new File("deleteDuppFile.sh"))){
             for (String s : duppFileList) {
                 if(isFileInPath(s,parentPath)){
-                    System.out.print("删除指定文件夹下的重复文件："+s);
-//                    Path path = Paths.get(s);
-//                    boolean deleteFlag = Files.deleteIfExists(path);
-//                    System.out.println(",删除状态："+deleteFlag);
+                    System.out.print("删除指定文件夹下的文件："+s);
                     writer.println("rm -f "+s);
+                    Path path = Paths.get(s);
+                    boolean deleteFlag = Files.deleteIfExists(path);
+                    System.out.println(",删除状态："+deleteFlag);
+
                 }
             }
         }catch (Exception e){
@@ -36,7 +37,7 @@ public class LocalFileDeleteService {
 
     public boolean isFileInPath(String filePath,String parentPath){
         File file = new File(filePath);
-        if(file.getParentFile().getAbsolutePath().equals(parentPath)){
+        if(file.getParentFile().getPath().equals(new File(parentPath).getPath())){
             return true;
         }
         return false;
@@ -58,13 +59,13 @@ public class LocalFileDeleteService {
             while ((line = br.readLine()) != null) {
                 // 一次读入一行数据
                 //ef35015aa5a3f249b377ee08200409ba25991e76a1404fed294cd0b153dfd897:[/Volumes/My Passport/相册/D3100/2012-8-26动物园/DSC_0239.JPG, /Volumes/My Passport/相册/D3100/D3100/2012-8-26动物园/DSC_0239.JPG]
-                String [] lineArray = line.split(":");
+                String [] lineArray = line.split("#");
                 if(lineArray.length == 2){
                     String duppFileArray = lineArray[1].replaceAll("\\[","").replaceAll("\\]","");
                     String[] fileNameList = duppFileArray.split(",");
-                    if(fileNameList.length == 2){
+                    if(fileNameList.length >= 2){
                         for (String s : fileNameList) {
-                            duppFileList.add(s);
+                            duppFileList.add(s.trim());
                         }
                     }
                 }
@@ -100,7 +101,7 @@ public class LocalFileDeleteService {
     public static void main(String[] args) {
         LocalFileDeleteService localFileDeleteService = new LocalFileDeleteService();
         try{
-            localFileDeleteService.deleteFile("/Volumes/My Passport/相册/D3100/D3100","duplicates.txt");
+            localFileDeleteService.deleteFile("I:\\相册\\D3100/2012-8-26动物园","duplicates.txt");
         }catch (Exception e){
             e.printStackTrace();
         }
