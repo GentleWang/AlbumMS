@@ -15,7 +15,6 @@ import com.hierynomus.smbj.share.DiskShare;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +28,7 @@ public class SmbService {
     String authPwd = "*****";
     String shareDir = "photos";
 
-    public Map<String, List<String>> getSMBFileMd5(String filePathDir, PrintWriter writer) throws IOException {
+    public Map<String, List<String>> getSMBFileHash(String filePathDir, PrintWriter writer) throws IOException {
         SmbConfig config = SmbConfig.builder()
                 .withTimeout(12000, TimeUnit.MINUTES) // Timeout sets Read, Write, and Transact timeouts (default is 60 seconds)
                 .withSoTimeout(18000, TimeUnit.MINUTES) // Socket Timeout (default is 0 seconds, blocks forever)
@@ -63,7 +62,7 @@ public class SmbService {
                 try {
                     // 这里就可以拿到文件流了，可以读取
                     com.hierynomus.smbj.share.File smbFileRead = dirShare.openFile(filePathDir, EnumSet.of(AccessMask.GENERIC_READ), null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OPEN, null);
-                    String fileMD5 = FileDigest.getFileMD5(smbFileRead.getInputStream());
+                    String fileMD5 = FileDigest.getFileHash(smbFileRead.getInputStream());
                     List<String> existingFile = md5s.putIfAbsent(fileMD5, Lists.newArrayList(filePathDir));
                     if (CollectionUtils.isNotEmpty(existingFile)) {
                         writer.print("Duplicate file found: " + filePathDir + " ");
