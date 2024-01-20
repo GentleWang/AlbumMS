@@ -20,18 +20,22 @@ public class LocalFileDeleteService {
         try(PrintWriter writer = new PrintWriter(new File("deleteDuppFile.sh"))){
             for (String hashKey : checkResultMap.keySet()) {
                 Set<String> duppFileSet = checkResultMap.get(hashKey);
-                Iterator iterator = duppFileSet.iterator();
+                if(isAllFileInPath(duppFileSet,parentPath)){
+                    System.out.println("查重文件全部在同一文件夹中，不删除");
+                    continue;
+                }
+                Iterator<String> iterator = duppFileSet.iterator();
                 while (iterator.hasNext()){
-                    String filePath = (String) iterator.next();
+                    String filePath = iterator.next();
                     if(isFileInPath(filePath,parentPath)){
                         System.out.print("删除指定文件夹下的文件："+filePath);
                         writer.println("rm -f "+filePath);
-                        Path path = Paths.get(filePath);
-                        boolean deleteFlag = Files.deleteIfExists(path);
-                        System.out.println(",删除状态："+deleteFlag);
-                        if(!deleteFlag){
-                            continue;
-                        }
+//                        Path path = Paths.get(filePath);
+//                        boolean deleteFlag = Files.deleteIfExists(path);
+//                        System.out.println(",删除状态："+deleteFlag);
+//                        if(!deleteFlag){
+//                            continue;
+//                        }
                         iterator.remove();
                         if(CollectionUtils.isNotEmpty(duppFileSet) && duppFileSet.size() >1){
                             checkResultMap.put(hashKey,duppFileSet);
@@ -63,6 +67,23 @@ public class LocalFileDeleteService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 检查文件是否全部都在需要删除的路径中
+     * @param duppFileSet
+     * @param parentPath
+     * @return
+     */
+    public boolean isAllFileInPath(Set<String> duppFileSet,String parentPath){
+        for (String filePath : duppFileSet) {
+            File file = new File(filePath);
+            if(!file.getParentFile().getPath().equals(new File(parentPath).getPath())){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -167,7 +188,7 @@ public class LocalFileDeleteService {
     public static void main(String[] args) {
         LocalFileDeleteService localFileDeleteService = new LocalFileDeleteService();
         try{
-            localFileDeleteService.deleteFile("I:\\相册\\手机备份所有照片\\查重\\周艳iPhone8 20191213/屏幕快照","duplicates.txt");
+            localFileDeleteService.deleteFile("I:\\相册\\手机备份所有照片\\查重/周艳iPhone8 20191213/个人收藏","duplicates.txt");
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -17,7 +17,7 @@ public class LocalDupplicatePhotoCheck {
 
         Map<String, List<String>> map = new HashMap<>();
         try (PrintWriter writer = new PrintWriter(new File("duplicates.txt"))) {
-            map = localFileHashService.getSMBFileHash("I:\\相册\\手机备份所有照片\\查重\\周艳IPhone20201115");
+            map = localFileHashService.getSMBFileHash("I:\\相册\\手机备份所有照片\\查重");
             Set<Map.Entry<String, List<String>>> entrySet = map.entrySet();
             for (Map.Entry<String, List<String>> stringListEntry : entrySet) {
                 if (CollectionUtils.isNotEmpty(stringListEntry.getValue()) && stringListEntry.getValue().size() > 1) {
